@@ -15,5 +15,6 @@ namespace StudyReg.Web.Data
         {
         }
         public DbSet<StudyReg.Web.Models.Card> Card { get; set; }
+        public DbSet<StudyReg.Web.Models.Deck> Deck { get; set; }
     }
 }
