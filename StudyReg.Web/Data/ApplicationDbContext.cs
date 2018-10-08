@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StudyReg.Web.Areas.Identity.Data;
+using StudyReg.Web.Models;
 
 namespace StudyReg.Web.Data
 {
@@ -13,5 +14,6 @@ namespace StudyReg.Web.Data
             : base(options)
         {
         }
+        public DbSet<StudyReg.Web.Models.Card> Card { get; set; }
     }
 }

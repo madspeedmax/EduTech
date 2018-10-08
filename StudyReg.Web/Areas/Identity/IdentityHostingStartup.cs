@@ -16,14 +16,14 @@ namespace StudyReg.Web.Areas.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(
-                        context.Configuration.GetConnectionString("ApplicationDbContextConnection")));
+            //builder.ConfigureServices((context, services) => {
+            //    services.AddDbContext<ApplicationDbContext>(options =>
+            //        options.UseSqlServer(
+            //            context.Configuration.GetConnectionString("ApplicationDbContextConnection")));
 
-                //services.AddDefaultIdentity<StudyRegWebUser>()
-                //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            });
+            //    //services.AddDefaultIdentity<StudyRegWebUser>()
+            //    //    .AddEntityFrameworkStores<ApplicationDbContext>();
+            //});
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StudyReg.Web.Areas.Identity.Data;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudyReg.Web.Models
@@ -8,5 +9,8 @@ namespace StudyReg.Web.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public string Answer { get; set; }
+
+        [ForeignKey("UserId")]
+        public StudyRegWebUser User { get; set; }
     }
 }
