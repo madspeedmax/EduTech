@@ -25,10 +25,21 @@ namespace StudyReg.Web.Pages.Cards
 
         public IList<Card> Card { get;set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string searchString)
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-            Card = await _context.Card.Where(c => c.User.Id ==loggedInUser.Id).ToListAsync();
+
+            var cards = from c in _context.Card
+                         select c;
+
+            cards.Where(c => c.User.Id == loggedInUser.Id);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                cards = cards.Where(c => c.Title.Contains(searchString) || c.Answer.Contains(searchString));
+            }
+
+            Card = await cards.ToListAsync();
         }
     }
 }

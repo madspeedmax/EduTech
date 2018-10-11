@@ -30,7 +30,7 @@ namespace StudyReg.Web.Pages.Decks
                 return NotFound();
             }
 
-            Deck = await _context.Deck.FirstOrDefaultAsync(m => m.Id == id);
+            Deck = await _context.Deck.Include(d => d.Cards).FirstOrDefaultAsync(m => m.Id == id);
 
             if (Deck == null)
             {
