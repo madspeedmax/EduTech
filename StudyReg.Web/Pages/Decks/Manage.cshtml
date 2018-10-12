@@ -1,0 +1,85 @@
+﻿@page
+@model StudyReg.Web.Pages.Decks.ManageModel
+
+@{
+    ViewData["Title"] = "Manage Deck";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h2>Manage Deck - @Html.DisplayFor(model => model.Deck.Title)</h2>
+<span class="btn btn-success pull-right" type="button" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Card</span>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DeckCards[0].Card.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeckCards[0].Card.Answer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var deckCard in Model.DeckCards)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => deckCard.Card.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => deckCard.Card.Answer)
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="delete">
+                        <input type="hidden" name="cardId" value="@deckCard.CardId" />
+                        <input type="hidden" name="deckId" value="@deckCard.DeckId" />
+                        <button type="submit" class="btn btn-danger">
+                            <i class="glyphicon glyphicon-trash"></i> 
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Add Card</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="add">
+                    <input type="hidden" asp-for="Deck.Id" />
+                    <input type="hidden" name="deckId" value="@Model.Deck.Id" />
+                    <div class="form-group">
+                        <label asp-for="DeckCards[0].Card.Title" class="control-label"></label>
+                        <input name="cardTitle" class="form-control" />
+                        <span asp-validation-for="DeckCards[0].Card.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DeckCards[0].Card.Answer" class="control-label"></label>
+                        <input name="cardAnswer" class="form-control" />
+                        <span asp-validation-for="DeckCards[0].Card.Answer" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Add" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

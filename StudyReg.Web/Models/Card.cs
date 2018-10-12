@@ -1,5 +1,6 @@
 ﻿using StudyReg.Web.Areas.Identity.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudyReg.Web.Models
@@ -12,5 +13,6 @@ namespace StudyReg.Web.Models
 
         [ForeignKey("UserId")]
         public StudyRegWebUser User { get; set; }
+        public ICollection<DeckCard> Decks { get; set; }
     }
 }

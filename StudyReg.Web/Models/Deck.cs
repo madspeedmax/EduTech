@@ -13,7 +13,6 @@ namespace StudyReg.Web.Models
 
         [ForeignKey("UserId")]
         public StudyRegWebUser User { get; set; }
-
-        public List<Card> Cards { get; set; }
+        public ICollection<DeckCard> Cards { get; set; }
     }
 }

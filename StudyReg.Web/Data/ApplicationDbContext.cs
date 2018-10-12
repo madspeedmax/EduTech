@@ -16,5 +16,13 @@ namespace StudyReg.Web.Data
         }
         public DbSet<StudyReg.Web.Models.Card> Card { get; set; }
         public DbSet<StudyReg.Web.Models.Deck> Deck { get; set; }
+        public DbSet<DeckCard> DeckCard { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<DeckCard>()
+                .HasKey(c => new { c.CardId, c.DeckId });
+        }
     }
 }
