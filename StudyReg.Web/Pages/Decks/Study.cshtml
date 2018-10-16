@@ -1,0 +1,87 @@
+﻿@page
+@model StudyReg.Web.Pages.Decks.StudyModel
+@{
+    ViewData["Title"] = "Study";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <div class="jumbotron" style="text-align:center">
+        <h1>Study</h1>
+        <p class="lead">Learn cards from @Html.DisplayFor(model => model.Deck.Title) using the Leitner System. Earlier stages should be studied more frequently, later stages less frequently.</p>
+    </div>
+
+    @if (Model.Card == null)
+    {
+        <div class="row">
+            @if (Model.Stages != null)
+            {
+                foreach (var stage in Model.Stages)
+                {
+                    <div class="@(stage == 0 ? "col-md-2 col-md-offset-1" : "col-md-2")">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">@(stage == 0 ? "Unstudied" : $"Stage {stage}")</div>
+                            <div class="panel-body">
+                                <form method="post" asp-page-handler="start">
+                                    <input type="hidden" name="deckId" value="@Model.Deck.Id" />
+                                    <input type="hidden" name="stage" value="@stage" />
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="glyphicon glyphicon-play">&nbsp;Start</i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <div>
+            <label class="btn btn-default" id="cardArea">Flip</label>
+            <div id="cardTitle">
+                @Model.Card.Title
+            </div>
+            <div id="cardAnswer" style="display:none">
+                <div>@Model.Card.Answer</div>
+                <form method="post" asp-page-handler="answer">
+                    <input type="hidden" name="deckId" value="@Model.Deck.Id" />
+                    <input type="hidden" name="cardId" value="@Model.Card.Id" />
+                    <input type="hidden" name="currentStage" value="@Model.Card." />
+                    <input id="cardResult" type="hidden" name="result" value="false" />
+                    <button id="correctButton" type="submit" class="btn btn-success">
+                        <i class="glyphicon glyphicon-check">&nbsp;Correct</i>
+                    </button>
+                    <button id="wrongButton" type="submit" class="btn btn-danger">
+                        <i class="glyphicon glyphicon-remove">&nbsp;Wrong</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $('#correctButton').click(function () {
+        $('#cardResult').val("true");
+    });
+
+    $('#wrongButton').click(function () {
+        $('#cardResult').val("false");
+    });
+
+    $('#cardAnswer').hide();
+
+    $('#cardArea').click(function () {
+        if ($("#cardTitle").is(":hidden")) {
+            $("#cardTitle").show();
+            $("#cardAnswer").hide();
+        }
+        else {
+            $("#cardTitle").hide();
+            $("#cardAnswer").show();
+        }
+    });
+</script>

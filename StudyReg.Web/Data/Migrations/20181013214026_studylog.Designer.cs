@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudyReg.Web.Data;
 
 namespace StudyReg.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181013214026_studylog")]
+    partial class studylog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,8 +245,7 @@ namespace StudyReg.Web.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CardId")
-                        .IsRequired();
+                    b.Property<int?>("CardId");
 
                     b.Property<bool>("Result");
 
@@ -252,8 +253,7 @@ namespace StudyReg.Web.Data.Migrations
 
                     b.Property<DateTime>("Timestamp");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
@@ -340,13 +340,11 @@ namespace StudyReg.Web.Data.Migrations
                 {
                     b.HasOne("StudyReg.Web.Models.Card", "Card")
                         .WithMany("Logs")
-                        .HasForeignKey("CardId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CardId");
 
                     b.HasOne("StudyReg.Web.Areas.Identity.Data.StudyRegWebUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

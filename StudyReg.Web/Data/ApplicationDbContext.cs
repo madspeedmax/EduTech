@@ -17,6 +17,7 @@ namespace StudyReg.Web.Data
         public DbSet<StudyReg.Web.Models.Card> Card { get; set; }
         public DbSet<StudyReg.Web.Models.Deck> Deck { get; set; }
         public DbSet<DeckCard> DeckCard { get; set; }
+        public DbSet<StudyLog> StudyLog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,5 +25,8 @@ namespace StudyReg.Web.Data
             modelBuilder.Entity<DeckCard>()
                 .HasKey(c => new { c.CardId, c.DeckId });
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
+            optionsBuilder.EnableSensitiveDataLogging();
     }
 }

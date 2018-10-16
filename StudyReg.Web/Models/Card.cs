@@ -14,5 +14,6 @@ namespace StudyReg.Web.Models
         [ForeignKey("UserId")]
         public StudyRegWebUser User { get; set; }
         public ICollection<DeckCard> Decks { get; set; }
+        public ICollection<StudyLog> Logs { get; set; }
     }
 }
