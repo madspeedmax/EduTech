@@ -30,7 +30,9 @@ namespace StudyReg.Web.Pages.Decks
 
         public Card Card { get; set; }
 
-        public List<int> Stages { get; set; }
+        public List<(int Stage, int Count)> Stages { get; set; }
+
+        public int Remaining { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -52,18 +54,30 @@ namespace StudyReg.Web.Pages.Decks
                 .Select(c => c.Logs.OrderByDescending(l => l.Timestamp).FirstOrDefault())
                 .ToListAsync();
 
-            Stages = recentLogs.Select(l => l?.Stage ?? 0).Distinct().OrderBy(i => i).ToList();
+            Stages = new List<(int Stage, int Count)>();
+
+            for (var stage = 0; stage <= _highestStage; stage++)
+            {
+                var count = 0;
+                if (stage == 0)
+                    count = recentLogs.Where(l => l?.Stage == null).Count();
+                else
+                    count = recentLogs.Where(l => l?.Stage != null && l.Stage == stage).Count();
+
+                Stages.Add((stage, count));
+            }
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostStart(int deckId, int stage)
+        public async Task<IActionResult> OnPostStart(int deckId, int stage, int numCards)
         {
-            await SetNextCard(deckId, stage);
+            await SetNextCard(deckId, stage, numCards);
+            Remaining = numCards - 1;
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAnswer(int deckId, int cardId, bool result)
+        public async Task<IActionResult> OnPostAnswer(int deckId, int cardId, bool result, int cardsLeft)
         {
             Card = await _context.Card
                 .Include(c => c.Logs)
@@ -109,7 +123,9 @@ namespace StudyReg.Web.Pages.Decks
             await _context.SaveChangesAsync();
 
             // Get next card
-            await SetNextCard(deckId, currentStage);
+            await SetNextCard(deckId, currentStage, cardsLeft);
+
+            Remaining = cardsLeft - 1;
 
             if (Card == null)
                 return RedirectToPage("./Study", new { id = deckId });
@@ -117,16 +133,23 @@ namespace StudyReg.Web.Pages.Decks
             return Page();
         }
 
-        private async Task SetNextCard(int deckId, int stage)
+        private async Task SetNextCard(int deckId, int stage, int cardsLeft)
         {
             Deck = await _context.Deck
                 .FirstOrDefaultAsync(m => m.Id == deckId);
 
+            if (cardsLeft <= 0)
+            {
+                Card = null;
+                return;
+            }
+                
             if (stage != 0)
             {
                 Card = await _context.Card
                     .Where(c => c.Decks.Any(d => d.DeckId == deckId) &&
                     c.Logs.OrderByDescending(l => l.Timestamp).FirstOrDefault().Stage == stage)
+                    .OrderBy(c => c.Logs.OrderByDescending(l => l.Timestamp).FirstOrDefault().Timestamp)
                     .FirstOrDefaultAsync();
             }
             else
@@ -135,29 +158,6 @@ namespace StudyReg.Web.Pages.Decks
                     .Where(c => c.Decks.Any(d => d.DeckId == deckId) && !c.Logs.Any())
                     .FirstOrDefaultAsync();
             }
-
-            #region Old Card retrieval
-            //// First prioritize cards with no study history
-            //Card = await _context.Card
-            //    .FirstOrDefaultAsync(c => c.Decks.Any(d => d.DeckId == deckId) && !c.Logs.Any());
-
-            //if (Card != null)
-            //    return;
-
-            //// Else get most recent log for each card
-            //var recentLogs = await _context.StudyLog.Include(l => l.Card)
-            //    .Where(l => l.Card.Decks.Any(d => d.DeckId == deckId))
-            //    .ToListAsync();
-
-            //var priorityLogs  = recentLogs
-            //    .GroupBy(l => l.Card)
-            //    .Select(g => g.OrderByDescending(l => l.Timestamp).FirstOrDefault());
-
-            //// Then choose card with lowest stage then oldest last studied
-            //Card = priorityLogs.OrderBy(l => l.Stage).ThenBy(l => l.Timestamp).FirstOrDefault().Card;
-            #endregion
-
-            return;
         }
     }
 }

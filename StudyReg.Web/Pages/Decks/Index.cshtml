@@ -18,7 +18,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.Deck[0].Created)
             </th>
-            <th></th>
+            <th>Edit</th>
+            <th>Study</th>
         </tr>
     </thead>
     <tbody>
@@ -32,6 +33,9 @@
             </td>
             <td>
                 <a class="btn btn-primary" asp-page="./Manage" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-pencil"></i>&nbsp;</a>
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-page="./Study" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-book"></i>&nbsp;</a>
             </td>
         </tr>
 }
