@@ -9,9 +9,9 @@ namespace StudyReg.Web.Pages
 {
     public class IndexModel : PageModel
     {
-        public void OnGet()
+        public IActionResult OnGet()
         {
-
+            return RedirectToPage("./Decks/Index");
         }
     }
 }
