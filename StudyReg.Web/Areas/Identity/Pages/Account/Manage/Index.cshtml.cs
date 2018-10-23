@@ -41,11 +41,6 @@ namespace StudyReg.Web.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Full name")]
-            public string Name { get; set; }
-
-            [Required]
             [EmailAddress]
             public string Email { get; set; }
 
@@ -70,7 +65,6 @@ namespace StudyReg.Web.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                Name = user.Name,
                 Email = email,
                 PhoneNumber = phoneNumber
             };
@@ -91,11 +85,6 @@ namespace StudyReg.Web.Areas.Identity.Pages.Account.Manage
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (Input.Name != user.Name)
-            {
-                user.Name = Input.Name;
             }
 
             var email = await _userManager.GetEmailAsync(user);
@@ -119,8 +108,6 @@ namespace StudyReg.Web.Areas.Identity.Pages.Account.Manage
                     throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
                 }
             }
-
-            await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

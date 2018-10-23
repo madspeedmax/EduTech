@@ -36,8 +36,10 @@ namespace StudyReg.Web.Pages.Decks
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
             Deck = await _context.Deck
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.User.Id == user.Id);
 
             if (Deck == null)
             {
@@ -100,7 +102,9 @@ namespace StudyReg.Web.Pages.Decks
                 return RedirectToPage("./Manage", new { id = deckId });
             }
 
-            Deck = await _context.Deck.FirstOrDefaultAsync(m => m.Id == deckId);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            Deck = await _context.Deck.FirstOrDefaultAsync(m => m.Id == deckId && m.User.Id == user.Id);
 
             if (Deck == null)
             {
@@ -111,7 +115,7 @@ namespace StudyReg.Web.Pages.Decks
             {
                 Title = cardTitle,
                 Answer = cardAnswer,
-                User = await _userManager.GetUserAsync(HttpContext.User)
+                User = user
             };
 
             _context.Card.Add(card);

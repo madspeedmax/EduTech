@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using StudyReg.Web.Areas.Identity.Data;
 using StudyReg.Web.Data;
 using StudyReg.Web.Models;
 
@@ -14,10 +16,12 @@ namespace StudyReg.Web.Pages.Decks
     public class EditModel : PageModel
     {
         private readonly StudyReg.Web.Data.ApplicationDbContext _context;
+        private readonly UserManager<StudyRegWebUser> _userManager;
 
-        public EditModel(StudyReg.Web.Data.ApplicationDbContext context)
+        public EditModel(StudyReg.Web.Data.ApplicationDbContext context, UserManager<StudyRegWebUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -30,14 +34,15 @@ namespace StudyReg.Web.Pages.Decks
                 return NotFound();
             }
 
-            Deck = await _context.Deck
-                //.Include(d => d.Cards)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            Deck = await _context.Deck.FirstOrDefaultAsync(m => m.Id == id && m.User.Id == user.Id);
 
             if (Deck == null)
             {
                 return NotFound();
             }
+
             return Page();
         }
 
@@ -48,7 +53,18 @@ namespace StudyReg.Web.Pages.Decks
                 return Page();
             }
 
-            _context.Attach(Deck).State = EntityState.Modified;
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var deckToUpdate = await _context.Deck.FirstOrDefaultAsync(m => m.Id == Deck.Id && m.User.Id == user.Id);
+
+            if (Deck == null)
+            {
+                return NotFound();
+            }
+
+            deckToUpdate.Title = Deck.Title;
+
+            _context.Attach(deckToUpdate).State = EntityState.Modified;
 
             try
             {

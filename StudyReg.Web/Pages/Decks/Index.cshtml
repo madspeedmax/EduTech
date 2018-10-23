@@ -18,7 +18,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Deck[0].Created)
             </th>
-            <th>Edit</th>
+            <th>Cards</th>
             <th>Study</th>
         </tr>
     </thead>
@@ -26,7 +26,7 @@
 @foreach (var item in Model.Deck) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => item.Title)&nbsp;<a asp-page="./Edit" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-pencil"></i></a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created)

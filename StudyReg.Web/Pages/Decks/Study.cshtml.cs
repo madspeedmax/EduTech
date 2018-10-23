@@ -41,8 +41,9 @@ namespace StudyReg.Web.Pages.Decks
                 return NotFound();
             }
 
-            Deck = await _context.Deck
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            Deck = await _context.Deck.FirstOrDefaultAsync(m => m.Id == id && m.User.Id == user.Id);
 
             if (Deck == null)
             {

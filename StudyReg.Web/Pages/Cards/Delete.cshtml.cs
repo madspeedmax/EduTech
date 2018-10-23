@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using StudyReg.Web.Areas.Identity.Data;
 using StudyReg.Web.Data;
 using StudyReg.Web.Models;
 
@@ -13,10 +15,12 @@ namespace StudyReg.Web.Pages.Cards
     public class DeleteModel : PageModel
     {
         private readonly StudyReg.Web.Data.ApplicationDbContext _context;
+        private readonly UserManager<StudyRegWebUser> _userManager;
 
-        public DeleteModel(StudyReg.Web.Data.ApplicationDbContext context)
+        public DeleteModel(StudyReg.Web.Data.ApplicationDbContext context, UserManager<StudyRegWebUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -29,12 +33,15 @@ namespace StudyReg.Web.Pages.Cards
                 return NotFound();
             }
 
-            Card = await _context.Card.FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            Card = await _context.Card.FirstOrDefaultAsync(m => m.Id == id && m.User.Id == user.Id);
 
             if (Card == null)
             {
                 return NotFound();
             }
+
             return Page();
         }
 
@@ -45,7 +52,9 @@ namespace StudyReg.Web.Pages.Cards
                 return NotFound();
             }
 
-            Card = await _context.Card.FindAsync(id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            Card = await _context.Card.FirstOrDefaultAsync(m => m.Id == id && m.User.Id == user.Id);
 
             if (Card != null)
             {
