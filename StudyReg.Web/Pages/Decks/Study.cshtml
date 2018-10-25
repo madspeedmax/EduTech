@@ -48,7 +48,7 @@ else
 {
     <div class="row" style="display:flex;align-items:center">
         <div class="col-sm-2">
-            <label class="btn btn-primary btn-lg" id="cardArea"><i class="glyphicon glyphicon-refresh"></i>&nbsp;Flip</label>
+            <label class="btn btn-primary btn-lg" id="cardFlip"><i class="glyphicon glyphicon-refresh"></i>&nbsp;Flip</label>
         </div>
         <div class="col-sm-10">
             <div class="jumbotron" style="text-align:center">
@@ -79,6 +79,19 @@ else
 }
 
 <script>
+    function flip () {
+        if ($("#cardTitle").is(":hidden")) {
+            $("#cardTitle").show();
+            $("#cardAnswer").hide();
+            $("#cardSubmit").hide();
+        }
+        else {
+            $("#cardTitle").hide();
+            $("#cardAnswer").show();
+            $("#cardSubmit").show();
+        }
+    };
+
     $('#correctButton').click(function () {
         $('#cardResult').val("true");
     });
@@ -90,16 +103,14 @@ else
     $('#cardAnswer').hide();
     $("#cardSubmit").hide();
 
-    $('#cardArea').click(function () {
-        if ($("#cardTitle").is(":hidden")) {
-            $("#cardTitle").show();
-            $("#cardAnswer").hide();
-            $("#cardSubmit").hide();
-        }
-        else {
-            $("#cardTitle").hide();
-            $("#cardAnswer").show();
-            $("#cardSubmit").show();
+    $('#cardFlip').click(flip);
+
+    $(document).keydown(function (event) {
+        let key = event.keyCode;
+        switch (key) {
+            case 32: //spacebar
+                flip();
+                break;
         }
     });
 </script>
