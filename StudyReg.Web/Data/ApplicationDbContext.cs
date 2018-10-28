@@ -28,5 +28,7 @@ namespace StudyReg.Web.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
             optionsBuilder.EnableSensitiveDataLogging();
+
+        public DbSet<StudyReg.Web.Models.Goal> Goal { get; set; }
     }
 }

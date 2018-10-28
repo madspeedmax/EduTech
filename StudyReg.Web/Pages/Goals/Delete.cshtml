@@ -1,0 +1,47 @@
+﻿@page
+@model StudyReg.Web.Pages.Goals.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Goal</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Goal.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Goal.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Goal.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Goal.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Goal.Created)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Goal.Created)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Goal.GoalDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Goal.GoalDate)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Goal.Id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

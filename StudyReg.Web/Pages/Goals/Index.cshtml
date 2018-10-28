@@ -1,0 +1,54 @@
+﻿@page
+@model StudyReg.Web.Pages.Goals.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h2>Goals</h2>
+
+<a class="btn btn-success pull-right" asp-page="Create"><i class="glyphicon glyphicon-plus"></i>&nbsp;New Goal</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Goal[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Goal[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Goal[0].GoalDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Goal[0].Deck)
+            </th>
+            <th>
+                Edit
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Goal) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GoalDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Deck.Title)
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-pencil"></i>&nbsp;</a>
+                @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
