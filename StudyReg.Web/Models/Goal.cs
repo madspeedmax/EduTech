@@ -29,6 +29,20 @@ namespace StudyReg.Web.Models
         [FutureDate(ErrorMessage ="Goal Date must be in the future.")]
         public DateTime GoalDate { get; set; }
 
+        [Display(Name = "Self-Assessment Date")]
+        [DataType(DataType.Date)]
+        public DateTime SelfAssessmentDate { get; set; }
+
+        [Display(Name = "Were the goal expectations met?")]
+        [DataType(DataType.MultilineText)]
+        [StringLength(5000)]
+        public string SelfAssessmentExpectation { get; set; }
+
+        [Display(Name = "What will you adjust for next time?")]
+        [DataType(DataType.MultilineText)]
+        [StringLength(5000)]
+        public string SelfAssessmentAdjustment { get; set; }
+
         [ForeignKey("UserId")]
         public StudyRegWebUser User { get; set; }
 
