@@ -27,6 +27,9 @@
             <th>
                 Edit
             </th>
+            <th>
+                Assess
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -46,7 +49,12 @@
             </td>
             <td>
                 <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-pencil"></i>&nbsp;</a>
-                @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>*@
+            </td>
+            <td>
+                @if (item.GoalDate.ToUniversalTime() < DateTime.UtcNow)
+                {
+                    <a class="btn btn-primary" asp-page="./Assess" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-education"></i>&nbsp;</a>
+                }
             </td>
         </tr>
 }
