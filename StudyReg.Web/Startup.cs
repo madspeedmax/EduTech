@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using StudyReg.Web.Areas.Identity.Services;
+using StudyReg.Web.Services;
 
 namespace StudyReg.Web
 {
@@ -61,6 +62,7 @@ namespace StudyReg.Web
 
             services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<MessageSenderOptions>(Configuration);
+            services.AddHostedService<NotifierService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
