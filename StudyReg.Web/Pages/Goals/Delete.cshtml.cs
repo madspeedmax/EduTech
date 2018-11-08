@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using StudyReg.Web.Areas.Identity.Data;
 using StudyReg.Web.Data;
 using StudyReg.Web.Models;
 
@@ -12,11 +14,13 @@ namespace StudyReg.Web.Pages.Goals
 {
     public class DeleteModel : PageModel
     {
-        private readonly StudyReg.Web.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<StudyRegWebUser> _userManager;
 
-        public DeleteModel(StudyReg.Web.Data.ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context, UserManager<StudyRegWebUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -29,12 +33,15 @@ namespace StudyReg.Web.Pages.Goals
                 return NotFound();
             }
 
-            Goal = await _context.Goal.FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            Goal = await _context.Goal.FirstOrDefaultAsync(m => m.Id == id && m.User.Id == user.Id);
 
             if (Goal == null)
             {
                 return NotFound();
             }
+
             return Page();
         }
 
@@ -45,9 +52,11 @@ namespace StudyReg.Web.Pages.Goals
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
             Goal = await _context.Goal.FindAsync(id);
 
-            if (Goal != null)
+            if (Goal != null && Goal.User.Id == user.Id)
             {
                 _context.Goal.Remove(Goal);
                 await _context.SaveChangesAsync();
