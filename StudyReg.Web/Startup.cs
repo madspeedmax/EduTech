@@ -46,7 +46,11 @@ namespace StudyReg.Web
 
             services.AddDefaultIdentity<StudyRegWebUser>(config =>
             {
-                config.SignIn.RequireConfirmedEmail = true;
+                //config.SignIn.RequireConfirmedEmail = true;
+                config.Password.RequireDigit = false;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequireUppercase = false;
+                config.Password.RequireLowercase = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
