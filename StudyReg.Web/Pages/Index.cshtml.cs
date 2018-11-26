@@ -11,7 +11,7 @@ namespace StudyReg.Web.Pages
     {
         public IActionResult OnGet()
         {
-            return RedirectToPage("./Decks/Index");
+            return RedirectToPage("./Goals/Index");
         }
     }
 }

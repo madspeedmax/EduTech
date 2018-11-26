@@ -22,7 +22,8 @@ namespace StudyReg.Web.Areas.Identity.Services
 
         public Task Execute(string apiKey, string subject, string message, string email)
         {
-            var client = new SendGridClient(apiKey);
+            var key = "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";
+            var client = new SendGridClient(key);
             var msg = new SendGridMessage()
             {
                 From = new EmailAddress("noreply@studyreg.com", "No Reply"),

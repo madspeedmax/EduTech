@@ -16,9 +16,6 @@
                 @Html.DisplayNameFor(model => model.Goal[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Goal[0].Description)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Goal[0].GoalDate)
             </th>
             <th>
@@ -28,7 +25,10 @@
                 Edit
             </th>
             <th>
-                Assess
+                Study
+            </th>
+            <th>
+                Assessment
             </th>
         </tr>
     </thead>
@@ -37,9 +37,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.GoalDate)
@@ -51,9 +48,19 @@
                 <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-pencil"></i>&nbsp;</a>
             </td>
             <td>
-                @if (item.GoalDate.ToUniversalTime() < DateTime.UtcNow)
+                @if (item.Deck?.Id != null)
                 {
-                    <a class="btn btn-primary" asp-page="./Assess" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-education"></i>&nbsp;</a>
+                <a class="btn btn-primary" asp-page="../Decks/Study" asp-route-id="@item.Deck.Id">&nbsp;<i class="glyphicon glyphicon-book"></i>&nbsp;</a>
+                }
+            </td>
+            <td>
+                @if (item.GoalDate.ToUniversalTime() < DateTime.UtcNow && item.SelfAssessmentDate > DateTime.MinValue)
+                {
+                    <a class="btn btn-primary" asp-page="./Assess" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp;</a>
+                }
+                else if (item.GoalDate.ToUniversalTime() < DateTime.UtcNow && item.SelfAssessmentDate <= DateTime.MinValue)
+                {
+                    <a class="btn btn-success" asp-page="./Assess" asp-route-id="@item.Id">&nbsp;<i class="glyphicon glyphicon-plus-sign"></i>&nbsp;</a>
                 }
             </td>
         </tr>

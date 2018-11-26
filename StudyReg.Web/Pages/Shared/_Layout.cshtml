@@ -24,10 +24,12 @@
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-page="/Index" class="navbar-brand"><i class="glyphicon glyphicon-home"></i>&nbsp;StudyReg</a>
+                <a asp-page="/Index" class="navbar-brand">StudyReg</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li><a asp-page="/Goals/Index">Goals</a></li>
+                    <li><a asp-page="/Decks/Index">Decks</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

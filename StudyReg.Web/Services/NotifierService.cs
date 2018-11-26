@@ -42,7 +42,7 @@ namespace StudyReg.Web.Services
                     .AsNoTracking()
                     .Include(g => g.User)
                     .Include(g => g.Deck.Cards)
-                    .Where(g => (g.GoalDate.Date >= DateTime.UtcNow.Date) && g.Deck.Cards.Any())
+                    .Where(g => g.Deck.Cards.Any())
                     .GroupBy(g => g.User.Email)
                     .Select(u => new
                     {
@@ -50,26 +50,54 @@ namespace StudyReg.Web.Services
                         GoalInfo = u.Select(g => new
                         {
                             Goal = g,
+                            GoalDate = g.GoalDate,
+                            AssessDate = g.SelfAssessmentDate,
                             StudyLogs = g.Deck.Cards.Select(c => c.Card.Logs.OrderByDescending(l => l.Timestamp).FirstOrDefault())
                         })
                     });
 
                 foreach (var emailGoals in userEmailsWithGoals)
                 {
-                    var goalsToRemind = emailGoals.GoalInfo
+                    var studyGoalNameList = "";
+                    var assessGoalNameList = "";
+                    var emailBody = "";
+
+
+                    // Study reminders
+                    var studyGoalsToRemind = emailGoals.GoalInfo
                         .Where(
-                        g => g.StudyLogs.Any(l => l == null) || 
-                        g.StudyLogs.Any(l => l.Stage == 1 && (DateTime.UtcNow - l.Timestamp).TotalHours > 12) ||
-                        g.StudyLogs.Any(l => l.Stage == 2 && (DateTime.UtcNow - l.Timestamp).TotalHours > 24) ||
-                        g.StudyLogs.Any(l => l.Stage == 3 && (DateTime.UtcNow - l.Timestamp).TotalHours > 36) ||
-                        g.StudyLogs.Any(l => l.Stage == 4 && (DateTime.UtcNow - l.Timestamp).TotalHours > 48)
+                        g => (g.GoalDate.Date >= DateTime.UtcNow.Date) &&
+                            (
+                                g.StudyLogs.Any(l => l == null) || 
+                                g.StudyLogs.Any(l => l.Stage == 1 && (DateTime.UtcNow - l.Timestamp).TotalHours > 12) ||
+                                g.StudyLogs.Any(l => l.Stage == 2 && (DateTime.UtcNow - l.Timestamp).TotalHours > 24) ||
+                                g.StudyLogs.Any(l => l.Stage == 3 && (DateTime.UtcNow - l.Timestamp).TotalHours > 36) ||
+                                g.StudyLogs.Any(l => l.Stage == 4 && (DateTime.UtcNow - l.Timestamp).TotalHours > 48)
+                            )
                         ).ToList();
 
-                    if (goalsToRemind.Any())
+                    if (studyGoalsToRemind.Any())
                     {
-                        var activeGoalNames = goalsToRemind.Select(g => g.Goal.Title).ToList();
+                        var activeGoalNames = studyGoalsToRemind.Select(g => g.Goal.Title).ToList();
+                        studyGoalNameList = string.Join(", ", activeGoalNames);
+                        emailBody += $"<b>Goals Needing Study:</b> {studyGoalNameList}<br/>";
+                    }
 
-                        _emailSender.SendEmailAsync(emailGoals.Email, $"Study Reminder", string.Join(Environment.NewLine, activeGoalNames));
+                    // Assess Reminders
+                    var assessGoalsToRemind = emailGoals.GoalInfo
+                        .Where( g => (g.GoalDate.Date < DateTime.UtcNow.Date) && (g.AssessDate <= DateTime.MinValue))
+                        .ToList();
+
+                    if (assessGoalsToRemind.Any())
+                    {
+                        var activeGoalNames = assessGoalsToRemind.Select(g => g.Goal.Title).ToList();
+                        assessGoalNameList = string.Join(", ", activeGoalNames);
+                        emailBody += $"<b>Goals Needing Assessments:</b> {assessGoalNameList}";
+                    }
+
+                    if (!String.IsNullOrWhiteSpace(emailBody))
+                    {
+                        _emailSender.SendEmailAsync(emailGoals.Email, $"Study Reg Reminders", emailBody);
                     }
                 }
             }

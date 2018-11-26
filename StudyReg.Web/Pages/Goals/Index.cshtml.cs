@@ -32,7 +32,7 @@ namespace StudyReg.Web.Pages.Goals
             Goal = await _context.Goal
                 .Include(g => g.Deck)
                 .Where(g => g.User.Id == user.Id)
-                .OrderByDescending(g => g.GoalDate)
+                .OrderBy(g => g.GoalDate).ThenBy(g => g.SelfAssessmentDate)
                 .ToListAsync();
         }
     }

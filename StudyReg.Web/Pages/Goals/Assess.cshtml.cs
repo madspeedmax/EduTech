@@ -37,6 +37,8 @@ namespace StudyReg.Web.Pages.Goals
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             Goal = await _context.Goal
+                .Include(g => g.User)
+                .Include(g => g.Deck)
                 .FirstOrDefaultAsync(
                     m => m.Id == id && 
                     m.User.Id == user.Id && 
@@ -52,14 +54,19 @@ namespace StudyReg.Web.Pages.Goals
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            var goalToEdit = await _context.Goal.Include(g => g.User).Where(g => g.Id == Goal.Id).FirstOrDefaultAsync();
 
-            if (!ModelState.IsValid && Goal.GoalDate.Date < DateTime.UtcNow.Date && Goal.User.Id == user.Id)
+            if (!ModelState.IsValid || goalToEdit == null || goalToEdit.GoalDate.Date > DateTime.UtcNow.Date || goalToEdit.User?.Id != user.Id)
             {
                 return Page();
             }
 
-            Goal.SelfAssessmentDate = DateTime.UtcNow;
-            _context.Attach(Goal).State = EntityState.Modified;
+            goalToEdit.SelfAssessmentExpectation = Goal.SelfAssessmentExpectation;
+            goalToEdit.SelfAssessmentAdjustment = Goal.SelfAssessmentAdjustment;
+            goalToEdit.Grade = Goal.Grade;
+            goalToEdit.SelfAssessmentDate = DateTime.UtcNow;
+
+            _context.Attach(goalToEdit).State = EntityState.Modified;
 
             try
             {

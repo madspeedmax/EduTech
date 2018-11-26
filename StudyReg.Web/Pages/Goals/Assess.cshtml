@@ -6,9 +6,9 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<h2>Assess</h2>
+<h2>Self-Assessment</h2>
 
-<h4>Goal</h4>
+<h4>@Model.Goal.Title</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,6 +24,11 @@
                 <label asp-for="Goal.SelfAssessmentAdjustment" class="control-label"></label>
                 <textarea asp-for="Goal.SelfAssessmentAdjustment" class="form-control"></textarea>
                 <span asp-validation-for="Goal.SelfAssessmentAdjustment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Goal.Grade" class="control-label"></label>
+                <input asp-for="Goal.Grade" class="form-control" />
+                <span asp-validation-for="Goal.Grade" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />

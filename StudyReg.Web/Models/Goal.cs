@@ -26,7 +26,6 @@ namespace StudyReg.Web.Models
 
         [Display(Name = "Goal Date")]
         [DataType(DataType.Date)]
-        [FutureDate(ErrorMessage ="Goal Date must be in the future.")]
         public DateTime GoalDate { get; set; }
 
         [Display(Name = "Self-Assessment Date")]
@@ -42,6 +41,10 @@ namespace StudyReg.Web.Models
         [DataType(DataType.MultilineText)]
         [StringLength(5000)]
         public string SelfAssessmentAdjustment { get; set; }
+
+        [Display(Name = "Grade Received (Leave blank if N/A)")]
+        [StringLength(200)]
+        public string Grade { get; set; }
 
         [ForeignKey("UserId")]
         public StudyRegWebUser User { get; set; }
